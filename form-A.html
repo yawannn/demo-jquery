@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Form A</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Form A</h1>
+        <form id="myForm">
+            <div class="form-group">
+                <label for="number">Enter a number:</label>
+                <input type="number" class="form-control" id="number" name="number" required>
+            </div>
+            <div class="form-group">
+                <label for="text">Enter some text:</label>
+                <input type="text" class="form-control" id="text" name="text" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+        <table id="myTable" style="display:none;" class="table">
+            <thead>
+                <tr>
+                    <th>Index</th>
+                    <th>Text</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script>
+        $(function() {
+            $("#myForm").submit(function(event) {
+                event.preventDefault(); 
+                var data = $(this).serialize();
+                $.ajax({
+                    url: "process.php",
+                    type: "POST",
+                    data: data,
+                    dataType: "json",
+                    success: function(response) {
+                        $("#myTable tbody").empty();
+                        $.each(response, function(index, value) {
+                            $("#myTable tbody").append("<tr><td>" + (index +1) + "</td><td>" + value + "</td></tr>");
+                        });
+                        $("#myTable").fadeIn();
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        alert("Error: " + textStatus + " - " + errorThrown);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
